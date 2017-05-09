@@ -11,7 +11,7 @@ from django.utils.http import http_date
 from django.utils.lru_cache import lru_cache
 from django.utils.module_loading import import_string
 from django.views.static import serve, was_modified_since
-
+import time
 
 @lru_cache()
 def get_server_class(path):
@@ -41,10 +41,10 @@ class DjangoStreamingServer(object):
     @staticmethod
     def serve(private_file):
         # Support If-Last-Modified
-        mtime = private_file.modified_time.timestamp()
+        mtime = time.mktime(private_file.modified_time.timetuple())
         size = private_file.size
-        # if not was_modified_since(private_file.request.META.get('HTTP_IF_MODIFIED_SINCE'), mtime, size):
-        #     return HttpResponseNotModified()
+        if not was_modified_since(private_file.request.META.get('HTTP_IF_MODIFIED_SINCE'), mtime, size):
+            return HttpResponseNotModified()
 
         # As of Django 1.8, FileResponse triggers 'wsgi.file_wrapper' in Django's WSGIHandler.
         # This uses efficient file streaming, such as sendfile() in uWSGI.
