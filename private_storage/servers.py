@@ -43,8 +43,8 @@ class DjangoStreamingServer(object):
         # Support If-Last-Modified
         mtime = private_file.modified_time.timestamp()
         size = private_file.size
-        if not was_modified_since(private_file.request.META.get('HTTP_IF_MODIFIED_SINCE'), mtime, size):
-            return HttpResponseNotModified()
+        # if not was_modified_since(private_file.request.META.get('HTTP_IF_MODIFIED_SINCE'), mtime, size):
+        #     return HttpResponseNotModified()
 
         # As of Django 1.8, FileResponse triggers 'wsgi.file_wrapper' in Django's WSGIHandler.
         # This uses efficient file streaming, such as sendfile() in uWSGI.
